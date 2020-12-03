@@ -30,8 +30,8 @@ function doPart2(input: string): void {
     const map: string[][] = buildMap(input);
     const mapWidth: number = map[0].length;
 
-    const slopes: number[][] = [[1,1],[3,1],[5,1],[7,1],[1,2]];
-    const result: number = slopes.reduce((p,s) => {
+    const slopes: number[][] = [[1, 1], [3, 1], [5, 1], [7, 1], [1, 2]];
+    const result: number = slopes.reduce((p, s) => {
         let count: number = 0;
         let pos: number[] = [0, 0];
         while (pos[1] < map.length - 1) {

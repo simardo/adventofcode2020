@@ -15,7 +15,7 @@ function doPart1(input: string): void {
         const char: string = match[3];
         const pwd: string = match[4];
 
-        const occ: number = [...pwd].reduce((p,s) => s === char ? p + 1 : p, 0);
+        const occ: number = [...pwd].reduce((p, s) => s === char ? p + 1 : p, 0);
         if (occ >= min && occ <= max) {
             valid++;
         }
@@ -37,7 +37,7 @@ function doPart2(input: string): void {
         const char: string = match[3];
         const pwd: string = match[4];
 
-        if ((pwd[idx1-1] === char) !== (pwd[idx2-1] === char)) {
+        if ((pwd[idx1 - 1] === char) !== (pwd[idx2 - 1] === char)) {
             valid++;
         }
     }
