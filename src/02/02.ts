@@ -38,7 +38,7 @@ function doPart2(input: string): void {
         const pwd: string = match[4];
 
         if ((pwd[idx1-1] === char) !== (pwd[idx2-1] === char)) {
-            valid++
+            valid++;
         }
     }
 
