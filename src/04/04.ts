@@ -4,20 +4,19 @@ console.log('4 décembre');
 
 function getPassports(input: string): any[] {
     const batch: string[] = input.split('\n');
+    batch.push('');
     const passports: any[] = [];
-    let passport: any = {};
-    batch.forEach(b => {
-        if (b === '') {
-            passports.push(passport);
-            passport = {};
-        } else {
-            const infos: string[][] = b.split(' ').map(li => li.split(':'));
-            infos.forEach(i => {
-                passport[i[0]] = i[1];
-            })
-        }
-    });
-    passports.push(passport);
+    while (batch.length > 0) {
+        const pinfo: string[] = batch.splice(0, batch.indexOf('') + 1);
+        const passport: any = pinfo.reduce((a,p) => {
+            p.split(' ').map(li => li.split(':')).reduce((aa, i) => {
+                aa[i[0]] = i[1];
+                return aa;
+            }, a);
+            return a;
+        }, {} as any);
+        passports.push(passport);
+    }
 
     return passports;
 }
