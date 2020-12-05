@@ -2,27 +2,25 @@ import { INPUT, TEST_1, TEST_2, TEST_3, TEST_4 } from './input.ts';
 
 console.log('5 décembre');
 
+type BoundFn = (t: [number,number]) => [number,number];
+
+const lobound: BoundFn = t => {
+    let [lo,hi] = t;
+    return [lo, lo + Math.floor((hi - lo) / 2)]
+}
+
+const hibound: BoundFn = t => {
+    let [lo,hi] = t;
+    return [lo + Math.ceil((hi - lo) / 2), hi];
+}
+
 // part 1
 function doPart1(input: string): void {
     const passes: string[] = input.split('\n');
+
     const max: number = passes.reduce((aa, pp) => {
-        const pass: string[] = [...pp];
-
-        const [, row] = pass.slice(0, 7).reduce((a, p) => {
-            if (p === 'F') {
-                return [a[0], a[0] + Math.floor((a[1] - a[0]) / 2)];
-            } else {
-                return [a[0] + Math.ceil((a[1] - a[0]) / 2), a[1]];
-            }
-        }, [0, 127]);
-
-        const [, seat] = pass.slice(7).reduce((a, p) => {
-            if (p === 'L') {
-                return [a[0], a[0] + Math.floor((a[1] - a[0]) / 2)];
-            } else {
-                return [a[0] + Math.ceil((a[1] - a[0]) / 2), a[1]];
-            }
-        }, [0, 7]);
+        const [, row] = [...pp].slice(0, 7).reduce((a, p) => p === 'F' ? lobound(a): hibound(a), [0, 127]);
+        const [, seat] = [...pp].slice(7).reduce((a, p) => p === 'L' ? lobound(a): hibound(a), [0, 7]);
 
         return Math.max(aa, row * 8 + seat);
     }, 0);
@@ -37,30 +35,14 @@ function doPart2(input: string): void {
     const allSeats: number[] = [];
     const passes: string[] = input.split('\n');
     passes.forEach(pp => {
-        const pass: string[] = [...pp];
+        const [, row] = [...pp].slice(0, 7).reduce((a, p) => p === 'F' ? lobound(a): hibound(a), [0, 127]);
+        const [, seat] = [...pp].slice(7).reduce((a, p) => p === 'L' ? lobound(a): hibound(a), [0, 7]);
 
-        const [, row] = pass.slice(0, 7).reduce((a, p) => {
-            if (p === 'F') {
-                return [a[0], a[0] + Math.floor((a[1] - a[0]) / 2)];
-            } else {
-                return [a[0] + Math.ceil((a[1] - a[0]) / 2), a[1]];
-            }
-        }, [0, 127]);
-
-        const [, seat] = pass.slice(7).reduce((a, p) => {
-            if (p === 'L') {
-                return [a[0], a[0] + Math.floor((a[1] - a[0]) / 2)];
-            } else {
-                return [a[0] + Math.ceil((a[1] - a[0]) / 2), a[1]];
-            }
-        }, [0, 7]);
-
-        const seatID: number = row * 8 + seat;
-        allSeats.push(seatID);
+        allSeats.push(row * 8 + seat);
     });
 
     allSeats.sort((a, b) => a - b);
-    const seatID: number = allSeats.reduce((r, s, i) => (i > 0 && s === allSeats[i - 1] + 2) ? s - 1 : r, -1);
+    const seatID: number = allSeats.find((s, i) => i > 0 && s === allSeats[i - 1] + 2)! - 1;
 
     console.log(seatID);
 }
