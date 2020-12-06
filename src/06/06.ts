@@ -8,7 +8,7 @@ function doPart1(input: string): void {
     groups.push('');
     const group: Set<string>[] = [];
     while (groups.length > 0) {
-        const ginfo: string[] = groups.splice(0, groups.indexOf('') + 1);
+        const ginfo: string[] = groups.splice(0, groups.indexOf('') + 1).slice(0, -1);
 
         const answ: Set<string> = ginfo.reduce((a, p) => {
             const s: string[] = [...p];
@@ -32,14 +32,9 @@ function doPart2(input: string): void {
     groups.push('');
     const group: Set<string>[] = [];
     while (groups.length > 0) {
-        const pinfo: string[] = groups.splice(0, groups.indexOf('') + 1);
+        const pinfo: string[] = groups.splice(0, groups.indexOf('') + 1).slice(0, -1);
 
-        const passport: Set<string> = pinfo.reduce((a, p) => {
-            if (p === '') {
-                return a;
-            }
-            return a === undefined ? new Set([...p]) : new Set([...p].filter(x => a.has(x)));
-        }, undefined! as Set<string>);
+        const passport: Set<string> = pinfo.reduce((a, p) => a === undefined ? new Set([...p]) : new Set([...p].filter(x => a.has(x))), undefined! as Set<string>);
 
         group.push(passport);
     }
@@ -47,4 +42,5 @@ function doPart2(input: string): void {
     console.log(r);
 }
 
+doPart2(TEST_2);
 doPart2(INPUT);
