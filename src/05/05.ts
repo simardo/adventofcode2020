@@ -2,15 +2,15 @@ import { INPUT, TEST_1, TEST_2, TEST_3, TEST_4 } from './input.ts';
 
 console.log('5 décembre');
 
-type BoundFn = (t: [number,number]) => [number,number];
+type BoundFn = (t: [number, number]) => [number, number];
 
 const lobound: BoundFn = t => {
-    let [lo,hi] = t;
+    const [lo, hi] = t;
     return [lo, lo + Math.floor((hi - lo) / 2)]
 }
 
 const hibound: BoundFn = t => {
-    let [lo,hi] = t;
+    const [lo, hi] = t;
     return [lo + Math.ceil((hi - lo) / 2), hi];
 }
 
@@ -19,8 +19,8 @@ function doPart1(input: string): void {
     const passes: string[] = input.split('\n');
 
     const max: number = passes.reduce((aa, pp) => {
-        const [, row] = [...pp].slice(0, 7).reduce((a, p) => p === 'F' ? lobound(a): hibound(a), [0, 127]);
-        const [, seat] = [...pp].slice(7).reduce((a, p) => p === 'L' ? lobound(a): hibound(a), [0, 7]);
+        const [, row] = [...pp].slice(0, 7).reduce((a, p) => p === 'F' ? lobound(a) : hibound(a), [0, 127]);
+        const [, seat] = [...pp].slice(7).reduce((a, p) => p === 'L' ? lobound(a) : hibound(a), [0, 7]);
 
         return Math.max(aa, row * 8 + seat);
     }, 0);
@@ -35,8 +35,8 @@ function doPart2(input: string): void {
     const allSeats: number[] = [];
     const passes: string[] = input.split('\n');
     passes.forEach(pp => {
-        const [, row] = [...pp].slice(0, 7).reduce((a, p) => p === 'F' ? lobound(a): hibound(a), [0, 127]);
-        const [, seat] = [...pp].slice(7).reduce((a, p) => p === 'L' ? lobound(a): hibound(a), [0, 7]);
+        const [, row] = [...pp].slice(0, 7).reduce((a, p) => p === 'F' ? lobound(a) : hibound(a), [0, 127]);
+        const [, seat] = [...pp].slice(7).reduce((a, p) => p === 'L' ? lobound(a) : hibound(a), [0, 7]);
 
         allSeats.push(row * 8 + seat);
     });
