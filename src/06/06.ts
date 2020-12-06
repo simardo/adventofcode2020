@@ -4,21 +4,17 @@ console.log('6 décembre');
 
 // part 1
 function doPart1(input: string): void {
-    const groups: string[] = input.split('\n');
-    groups.push('');
-    const group: Set<string>[] = [];
-    while (groups.length > 0) {
-        const ginfo: string[] = groups.splice(0, groups.indexOf('') + 1).slice(0, -1);
+    const groups: string[] = input.split('\n\n');
 
-        const answ: Set<string> = ginfo.reduce((a, p) => {
-            const s: string[] = [...p];
-            s.forEach(ss => a.add(ss));
-            return a;
+    const r: number = groups.reduce((a,g)=> {
+        const answ: Set<string> = g.split('\n').reduce((aa, gg) => {
+            [...gg].forEach(ss => aa.add(ss));
+            return aa;
         }, new Set<string>());
 
-        group.push(answ);
-    }
-    const r: number = group.reduce((a, p) => p.size + a, 0);
+        return answ.size + a;
+    }, 0);
+
     console.log(r);
 }
 
@@ -28,17 +24,14 @@ doPart1(INPUT);
 
 // part 2
 function doPart2(input: string): void {
-    const groups: string[] = input.split('\n');
-    groups.push('');
-    const group: Set<string>[] = [];
-    while (groups.length > 0) {
-        const pinfo: string[] = groups.splice(0, groups.indexOf('') + 1).slice(0, -1);
+    const groups: string[] = input.split('\n\n');
 
-        const passport: Set<string> = pinfo.reduce((a, p) => a === undefined ? new Set([...p]) : new Set([...p].filter(x => a.has(x))), undefined! as Set<string>);
+    const r: number = groups.reduce((a,g)=> {
+        const answ: Set<string> = g.split('\n').reduce((aa, gg) => aa === undefined ? new Set([...gg]) : new Set([...gg].filter(x => aa.has(x))), undefined! as Set<string>);
 
-        group.push(passport);
-    }
-    const r: number = group.reduce((a, p) => p.size + a, 0);
+        return answ.size + a;
+    }, 0);
+
     console.log(r);
 }
 
