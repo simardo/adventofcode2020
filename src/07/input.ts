@@ -18,16 +18,6 @@ dark green bags contain 2 dark blue bags.
 dark blue bags contain 2 dark violet bags.
 dark violet bags contain no other bags.`;
 
-export const TEST_3: string =
-    `
-
-    `;
-
-export const TEST_4: string =
-    `
-
-    `;
-
 export const INPUT: string =
     `bright olive bags contain 5 dotted white bags, 2 wavy lavender bags.
 plaid brown bags contain 3 bright lime bags, 5 plaid coral bags.
