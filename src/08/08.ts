@@ -69,8 +69,6 @@ function doPart2(input: string): void {
             }
         }
     }
-
-    console.log();
 }
 
 doPart2(INPUT);
