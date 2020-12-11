@@ -15,7 +15,7 @@ function isOccupied(x: number, y: number, map: [string, string][][]): boolean {
 
 type RuleFn = (x: number, y: number) => boolean;
 
-function render(map: [string,string][][]): void {
+function render(map: [string, string][][]): void {
     map.forEach(l => console.log(l.map(c => c[0]).join('')));
     console.log();
 }
@@ -25,14 +25,14 @@ function doPart1(input: string): void {
     const map: [string, string][][] = buildMap(input);
 
     const rules: RuleFn[] = [
-        (x,y) => isOccupied(x - 1, y, map),
-        (x,y) => isOccupied(x - 1, y - 1, map),
-        (x,y) => isOccupied(x, y - 1, map),
-        (x,y) => isOccupied(x + 1, y - 1, map),
-        (x,y) => isOccupied(x + 1, y, map),
-        (x,y) => isOccupied(x + 1, y + 1, map),
-        (x,y) => isOccupied(x, y + 1, map),
-        (x,y) => isOccupied(x - 1, y + 1, map)
+        (x, y) => isOccupied(x - 1, y, map),
+        (x, y) => isOccupied(x - 1, y - 1, map),
+        (x, y) => isOccupied(x, y - 1, map),
+        (x, y) => isOccupied(x + 1, y - 1, map),
+        (x, y) => isOccupied(x + 1, y, map),
+        (x, y) => isOccupied(x + 1, y + 1, map),
+        (x, y) => isOccupied(x, y + 1, map),
+        (x, y) => isOccupied(x - 1, y + 1, map)
     ];
 
     let round: number = 0;
@@ -43,17 +43,17 @@ function doPart1(input: string): void {
             line.forEach((col, x) => {
                 let [from, to] = col;
                 if (from === 'L') {
-                    const occ: number = rules.reduce((count, r) => !r(x,y) ? count + 1 : count, 0);
+                    const occ: number = rules.reduce((count, r) => !r(x, y) ? count + 1 : count, 0);
                     if (occ === 8) {
                         to = '#';
                     }
                 } else if (from === '#') {
-                    const occ: number = rules.reduce((count, r) => r(x,y) ? count + 1 : count, 0);
+                    const occ: number = rules.reduce((count, r) => r(x, y) ? count + 1 : count, 0);
                     if (occ >= 4) {
                         to = 'L';
                     }
                 }
-                map[y][x] = [from,to];
+                map[y][x] = [from, to];
             });
         });
 
@@ -82,7 +82,7 @@ function doPart1(input: string): void {
 doPart1(TEST_1);
 doPart1(INPUT);
 
-function left(x: number, y: number, map: [string,string][][]): boolean {
+function left(x: number, y: number, map: [string, string][][]): boolean {
     x--;
     while (x >= 0 && map[y][x][0] === '.') {
         x--;
@@ -90,7 +90,7 @@ function left(x: number, y: number, map: [string,string][][]): boolean {
     return x >= 0 && map[y][x][0] === '#';
 }
 
-function diagtopleft(x: number, y: number, map: [string,string][][]): boolean {
+function diagtopleft(x: number, y: number, map: [string, string][][]): boolean {
     x--;
     y--;
     while (x >= 0 && y >= 0 && map[y][x][0] === '.') {
@@ -100,7 +100,7 @@ function diagtopleft(x: number, y: number, map: [string,string][][]): boolean {
     return x >= 0 && y >= 0 && map[y][x][0] === '#';
 }
 
-function top(x: number, y: number, map: [string,string][][]): boolean {
+function top(x: number, y: number, map: [string, string][][]): boolean {
     y--;
     while (y >= 0 && map[y][x][0] === '.') {
         y--;
@@ -108,17 +108,17 @@ function top(x: number, y: number, map: [string,string][][]): boolean {
     return y >= 0 && map[y][x][0] === '#';
 }
 
-function diagtopright(x: number, y: number, map: [string,string][][]): boolean {
+function diagtopright(x: number, y: number, map: [string, string][][]): boolean {
     x++;
     y--;
-    while (y >= 0 &&x < map[y].length &&  map[y][x][0] === '.') {
+    while (y >= 0 && x < map[y].length && map[y][x][0] === '.') {
         x++;
         y--;
     }
-    return y >= 0 &&x < map[y].length &&  map[y][x][0] === '#';
+    return y >= 0 && x < map[y].length && map[y][x][0] === '#';
 }
 
-function right(x: number, y: number, map: [string,string][][]): boolean {
+function right(x: number, y: number, map: [string, string][][]): boolean {
     x++;
     while (x < map[y].length && map[y][x][0] === '.') {
         x++;
@@ -126,7 +126,7 @@ function right(x: number, y: number, map: [string,string][][]): boolean {
     return x < map[y].length && map[y][x][0] === '#';
 }
 
-function diagdownright(x: number, y: number, map: [string,string][][]): boolean {
+function diagdownright(x: number, y: number, map: [string, string][][]): boolean {
     x++;
     y++;
     while (y < map.length && x < map[y].length && map[y][x][0] === '.') {
@@ -136,7 +136,7 @@ function diagdownright(x: number, y: number, map: [string,string][][]): boolean 
     return y < map.length && x < map[y].length && map[y][x][0] === '#';
 }
 
-function down(x: number, y: number, map: [string,string][][]): boolean {
+function down(x: number, y: number, map: [string, string][][]): boolean {
     y++;
     while (y < map.length && map[y][x][0] === '.') {
         y++
@@ -144,28 +144,28 @@ function down(x: number, y: number, map: [string,string][][]): boolean {
     return y < map.length && map[y][x][0] === '#';
 }
 
-function diagdownleft(x: number, y: number, map: [string,string][][]): boolean {
+function diagdownleft(x: number, y: number, map: [string, string][][]): boolean {
     x--;
     y++;
     while (y < map.length && x >= 0 && map[y][x][0] === '.') {
         x--;
         y++;
     }
-    return y < map.length && x >= 0 &&  map[y][x][0] === '#';
+    return y < map.length && x >= 0 && map[y][x][0] === '#';
 }
 
 function doPart2(input: string): void {
     const map: [string, string][][] = buildMap(input);
 
     const rules: RuleFn[] = [
-        (x,y) => left(x, y, map),
-        (x,y) => diagtopleft(x, y, map),
-        (x,y) => top(x, y, map),
-        (x,y) => diagtopright(x, y, map),
-        (x,y) => right(x, y, map),
-        (x,y) => diagdownright(x, y, map),
-        (x,y) => down(x, y, map),
-        (x,y) => diagdownleft(x, y, map)
+        (x, y) => left(x, y, map),
+        (x, y) => diagtopleft(x, y, map),
+        (x, y) => top(x, y, map),
+        (x, y) => diagtopright(x, y, map),
+        (x, y) => right(x, y, map),
+        (x, y) => diagdownright(x, y, map),
+        (x, y) => down(x, y, map),
+        (x, y) => diagdownleft(x, y, map)
     ];
 
     let round: number = 0;
@@ -176,17 +176,17 @@ function doPart2(input: string): void {
             line.forEach((col, x) => {
                 let [from, to] = col;
                 if (from === 'L') {
-                    const occ: number = rules.reduce((count, r) => !r(x,y) ? count + 1 : count, 0);
+                    const occ: number = rules.reduce((count, r) => !r(x, y) ? count + 1 : count, 0);
                     if (occ === 8) {
                         to = '#';
                     }
                 } else if (from === '#') {
-                    const occ: number = rules.reduce((count, r) => r(x,y) ? count + 1 : count, 0);
+                    const occ: number = rules.reduce((count, r) => r(x, y) ? count + 1 : count, 0);
                     if (occ >= 5) {
                         to = 'L';
                     }
                 }
-                map[y][x] = [from,to];
+                map[y][x] = [from, to];
             });
         });
 
