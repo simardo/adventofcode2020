@@ -70,17 +70,20 @@ function doPart1(input: string): void {
 
     console.log(round);
 
-    const r: number = map.reduce((count, line, y) => {
-        return count + line.reduce((c, col, x) => {
-            return map[y][x][0] === '#' ? c + 1 : c;
-        }, 0);
-    }, 0)
+    const r: number = map.reduce((count, line, y) =>
+        count + line.reduce((c, col, x) =>
+            map[y][x][0] === '#' ? c + 1 : c
+            , 0)
+        , 0);
 
     console.log(r);
 }
 
 doPart1(TEST_1);
 doPart1(INPUT);
+
+
+// part 2
 
 function left(x: number, y: number, map: [string, string][][]): boolean {
     x--;
@@ -201,11 +204,11 @@ function doPart2(input: string): void {
         // render(map);
     }
 
-    const r: number = map.reduce((count, line, y) => {
-        return count + line.reduce((c, col, x) => {
-            return map[y][x][0] === '#' ? c + 1 : c;
-        }, 0);
-    }, 0)
+    const r: number = map.reduce((count, line, y) =>
+        count + line.reduce((c, col, x) =>
+            map[y][x][0] === '#' ? c + 1 : c
+            , 0)
+        , 0);
 
     console.log(r);
 }
