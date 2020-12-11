@@ -84,91 +84,28 @@ doPart1(INPUT);
 
 
 // part 2
-
-function left(x: number, y: number, map: [string, string][][]): boolean {
-    x--;
-    while (x >= 0 && map[y][x][0] === '.') {
-        x--;
+function look(x: number, y: number, xFn: (x: number) => number, yFn: (y: number) => number, map: [string, string][][]): boolean {
+    x = xFn(x);
+    y = yFn(y);
+    while (y >= 0 && x >= 0 && y < map.length && x < map[y].length && map[y][x][0] === '.') {
+        x = xFn(x);
+        y = yFn(y);
     }
-    return x >= 0 && map[y][x][0] === '#';
-}
-
-function diagtopleft(x: number, y: number, map: [string, string][][]): boolean {
-    x--;
-    y--;
-    while (x >= 0 && y >= 0 && map[y][x][0] === '.') {
-        x--;
-        y--;
-    }
-    return x >= 0 && y >= 0 && map[y][x][0] === '#';
-}
-
-function top(x: number, y: number, map: [string, string][][]): boolean {
-    y--;
-    while (y >= 0 && map[y][x][0] === '.') {
-        y--;
-    }
-    return y >= 0 && map[y][x][0] === '#';
-}
-
-function diagtopright(x: number, y: number, map: [string, string][][]): boolean {
-    x++;
-    y--;
-    while (y >= 0 && x < map[y].length && map[y][x][0] === '.') {
-        x++;
-        y--;
-    }
-    return y >= 0 && x < map[y].length && map[y][x][0] === '#';
-}
-
-function right(x: number, y: number, map: [string, string][][]): boolean {
-    x++;
-    while (x < map[y].length && map[y][x][0] === '.') {
-        x++;
-    }
-    return x < map[y].length && map[y][x][0] === '#';
-}
-
-function diagdownright(x: number, y: number, map: [string, string][][]): boolean {
-    x++;
-    y++;
-    while (y < map.length && x < map[y].length && map[y][x][0] === '.') {
-        x++;
-        y++
-    }
-    return y < map.length && x < map[y].length && map[y][x][0] === '#';
-}
-
-function down(x: number, y: number, map: [string, string][][]): boolean {
-    y++;
-    while (y < map.length && map[y][x][0] === '.') {
-        y++
-    }
-    return y < map.length && map[y][x][0] === '#';
-}
-
-function diagdownleft(x: number, y: number, map: [string, string][][]): boolean {
-    x--;
-    y++;
-    while (y < map.length && x >= 0 && map[y][x][0] === '.') {
-        x--;
-        y++;
-    }
-    return y < map.length && x >= 0 && map[y][x][0] === '#';
+    return y >= 0 && x >= 0 && y < map.length && x < map[y].length && map[y][x][0] === '#';
 }
 
 function doPart2(input: string): void {
     const map: [string, string][][] = buildMap(input);
 
     const rules: RuleFn[] = [
-        (x, y) => left(x, y, map),
-        (x, y) => diagtopleft(x, y, map),
-        (x, y) => top(x, y, map),
-        (x, y) => diagtopright(x, y, map),
-        (x, y) => right(x, y, map),
-        (x, y) => diagdownright(x, y, map),
-        (x, y) => down(x, y, map),
-        (x, y) => diagdownleft(x, y, map)
+        (x, y) => look(x, y, x => x - 1, y => y, map),
+        (x, y) => look(x, y, x => x - 1, y => y - 1, map),
+        (x, y) => look(x, y, x => x, y => y - 1, map),
+        (x, y) => look(x, y, x => x + 1, y => y - 1, map),
+        (x, y) => look(x, y, x => x + 1, y => y, map),
+        (x, y) => look(x, y, x => x + 1, y => y + 1, map),
+        (x, y) => look(x, y, x => x, y => y + 1, map),
+        (x, y) => look(x, y, x => x - 1, y => y + 1, map)
     ];
 
     let round: number = 0;
