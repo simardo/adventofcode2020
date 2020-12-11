@@ -44,16 +44,6 @@ export const TEST_2: string =
 10
 3`;
 
-export const TEST_3: string =
-    `
-
-    `;
-
-export const TEST_4: string =
-    `
-
-    `;
-
 export const INPUT: string =
     `105
 78

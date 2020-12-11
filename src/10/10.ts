@@ -1,4 +1,4 @@
-import { INPUT, TEST_1, TEST_2, TEST_3, TEST_4 } from './input.ts';
+import { INPUT, TEST_1, TEST_2 } from './input.ts';
 
 console.log('10 décembre');
 
