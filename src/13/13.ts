@@ -31,6 +31,9 @@ function doPart1(input: string): void {
 doPart1(INPUT);
 
 // part 2
+
+// ref https://fr.wikipedia.org/wiki/Th%C3%A9or%C3%A8me_des_restes_chinois
+
 function doPart2(input: string): void {
     const a: string[] = input.split('\n');
 
