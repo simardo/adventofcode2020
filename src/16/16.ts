@@ -31,7 +31,6 @@ function doPart1(input: string): void {
 }
 
 // doPart1(TEST_1);
-// doPart1(TEST_2);
 doPart1(INPUT);
 
 // part 2
