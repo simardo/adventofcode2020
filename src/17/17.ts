@@ -14,7 +14,7 @@ type Cube = {
 type Space = { [key: string]: Cube };
 
 function getCoord(x: number, y: number, z: number, w?: number): string {
-    return w? `x:${x},y:${y},z:${z},w:${w}` : `x:${x},y:${y},z:${z}`;
+    return w ? `x:${x},y:${y},z:${z},w:${w}` : `x:${x},y:${y},z:${z}`;
 }
 
 function getNeighbor(space: Space, x: number, y: number, z: number, w?: number): Cube {
@@ -22,7 +22,7 @@ function getNeighbor(space: Space, x: number, y: number, z: number, w?: number):
 
     let result: Cube = space[coord];
     if (!result) {
-        result = { x: x, y: y, z: z, w:w, active: false, next: false };
+        result = { x: x, y: y, z: z, w: w, active: false, next: false };
         space[coord] = result;
     }
 
@@ -59,8 +59,9 @@ function doPart1(input: string): void {
         Object.values(space).forEach(cube => {
             let activity: number = 0;
             permute([cube.x, cube.y, cube.z], 0, per => {
-                if (per[0] !== cube.x || per[1] !== cube.y || per[2] !== cube.z) {
-                    activity = getNeighbor(space, per[0], per[1], per[2]).active ? activity + 1 : activity
+                const [x, y, z] = per;
+                if (x !== cube.x || y !== cube.y || z !== cube.z) {
+                    activity = getNeighbor(space, x, y, z).active ? activity + 1 : activity
                 }
             });
 
@@ -94,8 +95,9 @@ function doPart2(input: string): void {
         Object.values(space).forEach(cube => {
             let activity: number = 0;
             permute([cube.x, cube.y, cube.z, cube.w!], 0, per => {
-                if (per[0] !== cube.x || per[1] !== cube.y || per[2] !== cube.z || per[3] !== cube.w) {
-                    activity = getNeighbor(space, per[0], per[1], per[2], per[3]).active ? activity + 1 : activity
+                const [x, y, z, w] = per;
+                if (x !== cube.x || y !== cube.y || z !== cube.z || w !== cube.w) {
+                    activity = getNeighbor(space, x, y, z, w).active ? activity + 1 : activity
                 }
             });
 
