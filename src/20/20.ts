@@ -1,4 +1,4 @@
-import { INPUT, TEST_1, TEST_2, TEST_3, TEST_4, IMAGE, IMAGE_TEST, IMAGE_TEST_1, IMAGE_R, IMAGE_H, IMAGE_V } from './input.ts';
+import { INPUT, TEST_1, IMAGE_TEST, IMAGE_TEST_1 } from './input.ts';
 
 console.log('20 décembre');
 
@@ -86,30 +86,21 @@ function doPart1(input: string): void {
         const map: string[][] = lines.slice(1).map((l, y) => [...l]);
 
         const id: number = Number.parseInt(idS);
+        const tlbr = getTlbr(map);
+        const sides = getSides(tlbr);
         const tile: Tile = {
             id: id,
             map: map,
-            tlbr: getTlbr(map),
-            sides: new Set<number>()
+            tlbr: tlbr,
+            sides: sides
         };
-
-        const [[top1, top2], [left1, left2], [bottom1, bottom2], [right1, right2]] = tile.tlbr;
-        tile.sides.add(top1);
-        tile.sides.add(top2);
-        tile.sides.add(left1);
-        tile.sides.add(left2);
-        tile.sides.add(bottom1);
-        tile.sides.add(bottom2);
-        tile.sides.add(right1);
-        tile.sides.add(right2);
 
         tiles[id] = tile;
     });
 
     const corners: Tile[] = [];
     Object.values(tiles).forEach(t => {
-        let used: number = 0;
-        Object.values(tiles).filter(tt => tt.id !== t.id).forEach(tt => {
+        let used: number = Object.values(tiles).filter(tt => tt.id !== t.id).reduce((u, tt) => {
             const [[top1, top2], [left1, left2], [bottom1, bottom2], [right1, right2]] = t.tlbr;
             if (tt.sides.has(top1)
                 || tt.sides.has(top2)
@@ -120,9 +111,10 @@ function doPart1(input: string): void {
                 || tt.sides.has(right1)
                 || tt.sides.has(right2)
             ) {
-                used++;
+                return u + 1;
             }
-        });
+            return u;
+        }, 0);
         if (used === 2) {
             corners.push(t);
         }
@@ -133,11 +125,8 @@ function doPart1(input: string): void {
     console.log(r);
 }
 
-// doPart1(TEST_1);
-// doPart1(TEST_2);
-// doPart1(TEST_3);
-// doPart1(TEST_4);
-// doPart1(INPUT);
+doPart1(TEST_1);
+doPart1(INPUT);
 
 const TOP: number = 0;
 const LEFT: number = 1;
@@ -152,60 +141,63 @@ function toString(tile: Tile): string {
     return tile.map.map(line => line.join('')).join('\n');
 }
 
-function rotate(tile: Tile, times: number): void {
-    for (let time: number = 1; time <= times; time++) {
-        const newMap: string[][] = [];
-        for (let x: number = 0; x < tile.map[0].length; x++) {
-            const line: string[] = [];
-            newMap.push(line);
-            for (let y: number = tile.map[0].length - 1; y >= 0; y--) {
-                line.push(tile.map[y][x])
-            }
+function rotateMap(map: string[][]): string[][] {
+    const newMap: string[][] = [];
+    for (let x: number = 0; x < map[0].length; x++) {
+        const line: string[] = [];
+        newMap.push(line);
+        for (let y: number = map[0].length - 1; y >= 0; y--) {
+            line.push(map[y][x])
         }
-        tile.map = newMap;
+    }
+
+    return newMap;
+}
+
+function rotateTile(tile: Tile, times: number): void {
+    for (let time: number = 1; time <= times; time++) {
+        tile.map = rotateMap(tile.map);
         tile.tlbr = getTlbr(tile.map);
         tile.sides = getSides(tile.tlbr);
     }
 }
 
-function flipH(tile: Tile): void {
+function flipHMap(map: string[][]): string[][] {
     const newMap: string[][] = [];
-    for (let y: number = tile.map.length - 1; y >= 0; y--) {
+    for (let y: number = map.length - 1; y >= 0; y--) {
         const line: string[] = [];
         newMap.push(line);
-        for (let x: number = 0; x < tile.map[y].length; x++) {
-            line.push(tile.map[y][x]);
+        for (let x: number = 0; x < map[y].length; x++) {
+            line.push(map[y][x]);
         }
     }
-    tile.map = newMap;
-    tile.tlbr = getTlbr(tile.map);
-    tile.sides = getSides(tile.tlbr);
 
-    // const newTop: Tile | undefined = tile.bottom;
-    // const newBottom: Tile | undefined = tile.top;
-
-    // tile.top = newTop;
-    // tile.bottom = newBottom;
+    return newMap;
 }
 
-function flipV(tile: Tile): void {
-    const newMap: string[][] = [];
-    for (let y: number = 0; y < tile.map.length; y++) {
-        const line: string[] = [];
-        newMap.push(line);
-        for (let x: number = tile.map[y].length - 1; x >= 0; x--) {
-            line.push(tile.map[y][x]);
-        }
-    }
-    tile.map = newMap;
+function flipHTile(tile: Tile): void {
+    tile.map = flipHMap(tile.map);
     tile.tlbr = getTlbr(tile.map);
     tile.sides = getSides(tile.tlbr);
+}
 
-    // const newLeft: Tile | undefined = tile.right;
-    // const newRight: Tile | undefined = tile.left;
+function flipVMap(map: string[][]): string[][] {
+    const newMap: string[][] = [];
+    for (let y: number = 0; y < map.length; y++) {
+        const line: string[] = [];
+        newMap.push(line);
+        for (let x: number = map[y].length - 1; x >= 0; x--) {
+            line.push(map[y][x]);
+        }
+    }
 
-    // tile.left = newLeft;
-    // tile.right = newRight;
+    return newMap;
+}
+
+function flipVTile(tile: Tile): void {
+    tile.map = flipVMap(tile.map);
+    tile.tlbr = getTlbr(tile.map);
+    tile.sides = getSides(tile.tlbr);
 }
 
 function connectTop(from: Tile, to: Tile): void {
@@ -213,37 +205,37 @@ function connectTop(from: Tile, to: Tile): void {
     const [[top1, top2], [left1, left2], [bottom1, bottom2], [right1, right2]] = to.tlbr;
 
     if (fromTop1 === left1 || fromTop2 === left2) {
-        rotate(from, 1);
+        rotateTile(from, 1);
         to.left = from;
         from.right = to;
     } else if (fromTop1 === left2 || fromTop2 === left1) {
-        rotate(from, 1);
-        flipH(from);
+        rotateTile(from, 1);
+        flipHTile(from);
         to.left = from;
         from.right = to;
     } else if (fromTop1 === bottom1 || fromTop2 === bottom2) {
         to.bottom = from;
         from.top = to;
     } else if (fromTop1 === bottom2 || fromTop2 === bottom1) {
-        flipV(from);
+        flipVTile(from);
         to.bottom = from;
         from.top = to;
     } else if (fromTop1 === right1 || fromTop2 === right2) {
-        rotate(from, 3);
-        flipH(from);
+        rotateTile(from, 3);
+        flipHTile(from);
         to.right = from;
         from.left = to;
     } else if (fromTop1 === right2 || fromTop2 === right1) {
-        rotate(from, 3);
+        rotateTile(from, 3);
         to.right = from;
         from.left = to;
     } else if (fromTop1 === top1 || fromTop2 === top2) {
-        flipH(from)
+        flipHTile(from)
         to.top = from;
         from.bottom = to;
     } else if (fromTop1 === top2 || fromTop2 === top1) {
-        flipH(from);
-        flipV(from);
+        flipHTile(from);
+        flipVTile(from);
         to.top = from;
         from.bottom = to;
     }
@@ -254,37 +246,37 @@ function connectLeft(from: Tile, to: Tile): void {
     const [[top1, top2], [left1, left2], [bottom1, bottom2], [right1, right2]] = to.tlbr;
 
     if (fromLeft1 === top1 || fromLeft2 === top2) {
-        rotate(from, 3);
+        rotateTile(from, 3);
         to.top = from;
         from.bottom = to;
     } else if (fromLeft1 === top2 || fromLeft2 === top1) {
-        rotate(from, 3);
-        flipV(from);
+        rotateTile(from, 3);
+        flipVTile(from);
         to.top = from;
         from.bottom = to;
     } else if (fromLeft1 === bottom1 || fromLeft2 === bottom2) {
-        rotate(from, 1);
-        flipV(from);
+        rotateTile(from, 1);
+        flipVTile(from);
         to.bottom = from;
         from.top = to;
     } else if (fromLeft1 === bottom2 || fromLeft2 === bottom1) {
-        rotate(from, 1);
+        rotateTile(from, 1);
         to.bottom = from;
         from.top = to;
     } else if (fromLeft1 === right1 || fromLeft2 === right2) {
         to.right = from;
         from.left = to;
     } else if (fromLeft1 === right2 || fromLeft2 === right1) {
-        flipH(from);
+        flipHTile(from);
         to.right = from;
         from.left = to;
     } else if (fromLeft1 === left1 || fromLeft2 === left2) {
-        flipV(from)
+        flipVTile(from)
         to.left = from;
         from.right = to;
     } else if (fromLeft1 === left2 || fromLeft2 === left1) {
-        flipV(from);
-        flipH(from);
+        flipVTile(from);
+        flipHTile(from);
         to.left = from;
         from.right = to;
     }
@@ -295,37 +287,37 @@ function connectBottom(from: Tile, to: Tile): void {
     const [[top1, top2], [left1, left2], [bottom1, bottom2], [right1, right2]] = to.tlbr;
 
     if (fromBottom1 === left1 || fromBottom2 === left2) {
-        rotate(from, 3);
-        flipH(from);
+        rotateTile(from, 3);
+        flipHTile(from);
         to.left = from;
         from.right = to;
     } else if (fromBottom1 === left2 || fromBottom2 === left1) {
-        rotate(from, 3);
+        rotateTile(from, 3);
         to.left = from;
         from.right = to;
     } else if (fromBottom1 === top1 || fromBottom2 === top2) {
         to.top = from;
         from.bottom = to;
     } else if (fromBottom1 === top2 || fromBottom2 === top1) {
-        flipV(from);
+        flipVTile(from);
         to.top = from;
         from.bottom = to;
     } else if (fromBottom1 === right1 || fromBottom2 === right2) {
-        rotate(from, 1);
+        rotateTile(from, 1);
         to.right = from;
         from.left = to;
     } else if (fromBottom1 === right2 || fromBottom2 === right1) {
-        rotate(from, 1);
-        flipH(from);
+        rotateTile(from, 1);
+        flipHTile(from);
         to.right = from;
         from.left = to;
     } else if (fromBottom1 === bottom1 || fromBottom2 === bottom2) {
-        flipH(from)
+        flipHTile(from)
         to.bottom = from;
         from.top = to;
     } else if (fromBottom1 === bottom2 || fromBottom2 === bottom1) {
-        flipH(from);
-        flipV(from);
+        flipHTile(from);
+        flipVTile(from);
         to.bottom = from;
         from.top = to;
     }
@@ -336,37 +328,37 @@ function connectRight(from: Tile, to: Tile): void {
     const [[top1, top2], [left1, left2], [bottom1, bottom2], [right1, right2]] = to.tlbr;
 
     if (fromRight1 === top1 || fromRight2 === top2) {
-        rotate(from, 1);
-        flipV(from);
+        rotateTile(from, 1);
+        flipVTile(from);
         to.top = from;
         from.bottom = to;
     } else if (fromRight1 === top2 || fromRight2 === top1) {
-        rotate(from, 1);
+        rotateTile(from, 1);
         to.top = from;
         from.bottom = to;
     } else if (fromRight1 === bottom1 || fromRight2 === bottom2) {
-        rotate(from, 3);
+        rotateTile(from, 3);
         to.bottom = from;
         from.top = to;
     } else if (fromRight1 === bottom2 || fromRight2 === bottom1) {
-        rotate(from, 3);
-        flipV(from);
+        rotateTile(from, 3);
+        flipVTile(from);
         to.bottom = from;
         from.top = to;
     } else if (fromRight1 === left1 || fromRight2 === left2) {
         to.left = from;
         from.right = to;
     } else if (fromRight1 === left2 || fromRight2 === left1) {
-        flipH(from);
+        flipHTile(from);
         to.left = from;
         from.right = to;
     } else if (fromRight1 === right1 || fromRight2 === right2) {
-        flipV(from)
+        flipVTile(from)
         to.right = from;
         from.left = to;
     } else if (fromRight1 === right2 || fromRight2 === right1) {
-        flipV(from);
-        flipH(from);
+        flipVTile(from);
+        flipHTile(from);
         to.right = from;
         from.left = to;
     }
@@ -393,8 +385,6 @@ function doPart2(input: string): void {
 
         tiles[id] = tile;
     });
-
-    // console.log(tiles);
 
     const puzzle: Tile[] = [];
 
@@ -435,33 +425,22 @@ function doPart2(input: string): void {
         });
     }
 
-    console.log(puzzle.length);
-    puzzle.forEach(p => {
-        console.log(p.id);
-        console.log('t', p.top?.id);
-        console.log('l', p.left?.id);
-        console.log('b', p.bottom?.id);
-        console.log('r', p.right?.id);
-        console.log('--');
-    })
-
     const topLeft: Tile = puzzle.find(t => !t.top && !t.left)!;
 
-    const image: string[] = [];
+    let image: string[][] = [];
     let bottom: Tile | undefined = topLeft;
 
-    let line: string[] = [];
     let z: number = 0;
     while (bottom) {
         let right: Tile | undefined = bottom;
         for (let i: number = 1; i <= 8; i++) {
-            image.push('');
+            image.push([]);
         }
         while (right) {
             let c: number = 0;
             right.map.forEach((l, i) => {
                 if (i > 0 && i < 9) {
-                    image[z + c++] += l.slice(1, l.length - 1).join('')
+                    image[z + c++].push(...l.slice(1, l.length - 1));
                 }
             });
             right = right.right;
@@ -470,81 +449,36 @@ function doPart2(input: string): void {
         z += 8;
     }
 
-    // image.forEach((s,i) => console.log(s.substr(1, s.length - 2)));
-    image.forEach((s, i) => console.log(s));
-}
+    const sharpCount: number = image.reduce((a, l) => {
+        return a + l.reduce((aa, ll) => ll === '#' ? aa + 1 : aa,0)
+    }, 0);
 
-// doPart2(TEST_1);
-// doPart2(TEST_2);
-// doPart2(TEST_3);
-// doPart2(TEST_4);
-// doPart2(INPUT);
-
-const monster: string =
-    `
-                  #
-#    ##    ##    ###
- #  #  #  #  #  #
-`
-
-function rotateImage(image: string[][]): string[][] {
-    const newImage: string[][] = [];
-    for (let x: number = 0; x < image[0].length; x++) {
-        const line: string[] = [];
-        newImage.push(line);
-        for (let y: number = image[0].length - 1; y >= 0; y--) {
-            line.push(image[y][x])
+    let mc: number = 0;
+    let iter: number = 0;
+    do {
+        iter++;
+        if (iter % 3 === 0) {
+            mc = countMonsters(image);
+            image = rotateMap(image);
+        } else if (iter % 2 === 0) {
+            mc = countMonsters(flipHMap(image));
+        } else {
+            mc = countMonsters(flipVMap(image));
         }
-    }
+    } while (mc === 0);
 
-    return newImage;
+    const MONSTER_SHARP_COUNT: number = 15;
+
+    console.log(sharpCount - (MONSTER_SHARP_COUNT * mc));
 }
 
-function flipHImage(image: string[][]): string[][] {
-    const newImage: string[][] = [];
-    for (let y: number = image.length - 1; y >= 0; y--) {
-        const line: string[] = [];
-        newImage.push(line);
-        for (let x: number = 0; x < image[y].length; x++) {
-            line.push(image[y][x]);
-        }
-    }
-
-    return newImage;
-}
-
-function flipVImage(image: string[][]): string[][] {
-    const newImage: string[][] = [];
-    for (let y: number = 0; y < image.length; y++) {
-        const line: string[] = [];
-        newImage.push(line);
-        for (let x: number = image[y].length - 1; x >= 0; x--) {
-            line.push(image[y][x]);
-        }
-    }
-    return newImage;
-}
-
-function doImages(input: string): void {
-    const mapIndex: string[][] = input.split('\n').map((l, y) => [...l]);
-
-    // rotateImage(mapIndex).forEach(l => console.log(l.join('')));
-    console.log();
-    flipHImage(mapIndex).forEach(l => console.log(l.join('')));
-    console.log();
-    flipVImage(mapIndex).forEach(l => console.log(l.join('')));
-}
-
-function doMonster(input: string): void {
-    const map: string[] = input.split('\n').map((l, y) => l);
-    const mapIndex: string[][] = input.split('\n').map((l, y) => [...l]);
-
+function countMonsters(map: string[][]): number {
     let monsterCount: number = 0;
     for (let i: number = 1; i < map.length - 1; i++) {
         let gap: number = 0;
-        const prev: string = map[i - 1];
-        const line: string = map[i];
-        const next: string = map[i + 1];
+        const prev: string[] = map[i - 1];
+        const line: string[] = map[i];
+        const next: string[] = map[i + 1];
         while (gap < line.length - 20) {
             if (line[gap] === '#' && line[gap + 5] === '#' && line[gap + 6] === '#' && line[gap + 11] === '#' && line[gap + 12] === '#' && line[gap + 17] === '#' && line[gap + 18] === '#' && line[gap + 19] === '#'
                 && prev[gap + 18] === '#'
@@ -555,17 +489,41 @@ function doMonster(input: string): void {
         }
     }
 
-    // console.log(map);
-    console.log(monsterCount);
-
-    const r = mapIndex.reduce((a, l) => {
-        return a + l.reduce((aa, ll) => ll === '#' ? aa + 1 : aa,0)
-    }, 0);
-
-    console.log(r - (15 * monsterCount));
+    return monsterCount;
 }
 
-doMonster(IMAGE_R);
-doMonster(IMAGE_H);
-doMonster(IMAGE_V);
-// doImages(IMAGE_R);
+function colorMonsters(map: string[][]): number {
+    let monsterCount: number = 0;
+    for (let i: number = 1; i < map.length - 1; i++) {
+        let gap: number = 0;
+        const prev: string[] = map[i - 1];
+        const line: string[] = map[i];
+        const next: string[] = map[i + 1];
+        while (gap < line.length - 20) {
+            if (line[gap] === '#' && line[gap + 5] === '#' && line[gap + 6] === '#' && line[gap + 11] === '#' && line[gap + 12] === '#' && line[gap + 17] === '#' && line[gap + 18] === '#' && line[gap + 19] === '#'
+                && prev[gap + 18] === '#'
+                && next[gap + 1] === '#' && next[gap + 4] === '#' && next[gap + 7] === '#' && next[gap + 10] === '#' && next[gap + 13] === '#' && next[gap + 16] === '#') {
+                monsterCount++;
+
+                line[gap] = 'O'; line[gap + 5] = 'O'; line[gap + 6] = 'O'; line[gap + 11] = 'O'; line[gap + 12] = 'O'; line[gap + 17] === 'O'; line[gap + 18] = 'O'; line[gap + 19] = 'O';
+                prev[gap + 18] = 'O';
+                next[gap + 1] = 'O'; next[gap + 4] = 'O'; next[gap + 7] = 'O'; next[gap + 10] = 'O'; next[gap + 13] = 'O'; next[gap + 16] = 'O';
+            }
+            gap++;
+        }
+    }
+
+    map.forEach(s => console.log(s.join('')));
+
+    return monsterCount;
+}
+
+doPart2(TEST_1);
+doPart2(INPUT);
+
+const monster: string =
+    `
+                  #
+#    ##    ##    ###
+ #  #  #  #  #  #
+`
