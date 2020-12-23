@@ -31,15 +31,18 @@ doPart1(TEST_1);
 doPart1(INPUT);
 
 function doGame(deck1: number[], deck2: number[], id: number): number {
-    const history: Set<string> = new Set();
+    const history1: Set<string> = new Set();
+    const history2: Set<string> = new Set();
 
     while (deck1.length > 0 && deck2.length > 0) {
-        const set: string = `${deck1.join(',')}:${deck2.join(',')}`;
+        const set: string = deck1.join(',');
+        const set2: string = deck2.join(',');
 
-        if (history.has(set)) {
+        if (history1.has(set) || history1.has(set2)) {
             break;
         } else {
-            history.add(set);
+            history1.add(set);
+            history2.add(set);
 
             const c1: number = deck1.shift()!;
             const c2: number = deck2.shift()!;
