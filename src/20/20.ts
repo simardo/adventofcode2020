@@ -142,16 +142,7 @@ function toString(tile: Tile): string {
 }
 
 function rotateMap(map: string[][]): string[][] {
-    const newMap: string[][] = [];
-    for (let x: number = 0; x < map[0].length; x++) {
-        const line: string[] = [];
-        newMap.push(line);
-        for (let y: number = map[0].length - 1; y >= 0; y--) {
-            line.push(map[y][x])
-        }
-    }
-
-    return newMap;
+    return map[0].map((_, i) => map.map(row => row[i]).reverse());
 }
 
 function rotateTile(tile: Tile, times: number): void {
@@ -163,16 +154,7 @@ function rotateTile(tile: Tile, times: number): void {
 }
 
 function flipHMap(map: string[][]): string[][] {
-    const newMap: string[][] = [];
-    for (let y: number = map.length - 1; y >= 0; y--) {
-        const line: string[] = [];
-        newMap.push(line);
-        for (let x: number = 0; x < map[y].length; x++) {
-            line.push(map[y][x]);
-        }
-    }
-
-    return newMap;
+    return map.slice().reverse();
 }
 
 function flipHTile(tile: Tile): void {
@@ -182,16 +164,7 @@ function flipHTile(tile: Tile): void {
 }
 
 function flipVMap(map: string[][]): string[][] {
-    const newMap: string[][] = [];
-    for (let y: number = 0; y < map.length; y++) {
-        const line: string[] = [];
-        newMap.push(line);
-        for (let x: number = map[y].length - 1; x >= 0; x--) {
-            line.push(map[y][x]);
-        }
-    }
-
-    return newMap;
+    return map.map(line => line.slice().reverse());
 }
 
 function flipVTile(tile: Tile): void {
